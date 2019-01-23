@@ -96,7 +96,7 @@ def main():
             cv2.putText(frame, msg, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, player1.color, 2, cv2.LINE_AA)
             msg = 'Pts: ' + str(right_player_points)
             cv2.putText(frame, msg, (screen.width - 80, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, player2.color, 2, cv2.LINE_AA)
-            msg = 'Press Esc to exit, R to reset cofing'
+            msg = 'Press Esc to exit, R to reset config'
             cv2.putText(frame, msg, (int(screen.width/2) - 170, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, BLUE, 2, cv2.LINE_AA)
 
             cv2.imshow('real_view', frame)
