@@ -20,8 +20,7 @@ class Ball:
         x_floor = math.floor(self.position[0])
         y_floor = math.floor(self.position[1])
         if self.player is None:
-            rand_color = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
-            cv2.circle(screen, (x_floor, y_floor), self.radius, rand_color, -1)
+            cv2.circle(screen, (x_floor, y_floor), self.radius, (255, 255, 255), -1)
         else:
             cv2.circle(screen, (x_floor, y_floor), self.radius, self.player.color, -1)
 
@@ -72,7 +71,7 @@ class Player:
 
 class ROITracker:
     def __init__(self, r, h, c, w, frame):
-        self.track_window = (c, r, w, h)
+        self.track_window = (c, r, w, h)  # crwh
         self.frame = frame
         roi = self.frame[r:r + h, c:c + w]
         hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
@@ -97,18 +96,28 @@ class Screen:
         self.roi_width = roi_width
         self.roi_height = roi_height
 
-    def get_track_window(self):
-        return int((self.width - self.roi_width) / 2), int((self.height - self.roi_height) / 2), self.roi_width, self.roi_height
+    def get_track_window(self, option):
+        if option == 0:
+            return int(self.width / 4 - self.roi_width / 2), int((self.height - self.roi_height) / 2), self.roi_width, self.roi_height
+        if option == 1:
+            return int(3 * self.width / 4 - self.roi_width / 2), int((self.height - self.roi_height) / 2), self.roi_width, self.roi_height
+        return None
 
     def align_roi(self, cap, key_confirm_code, delay):
         BLUE = (255, 0, 0)
         WHITE = (255, 255, 255)
-        c, r, w, h = self.get_track_window()
+        c, r, w, h = self.get_track_window(0)
+        lefttop0 = (c, r)
+        bottomright0 = (c + w, r + h)
+        c, r, w, h = self.get_track_window(1)
+        lefttop1 = (c, r)
+        bottomright1 = (c + w, r + h)
         key_pressed = -1
         while key_pressed != key_confirm_code:
             ret, frame = cap.read()
-            cv2.rectangle(frame, (c, r), (c + w, r + h), BLUE, 2)
-            msg = 'Put your face in the rectangle, press space to confirm'
+            cv2.rectangle(frame, lefttop0, bottomright0, BLUE, 2)
+            cv2.rectangle(frame, lefttop1, bottomright1, BLUE, 2)
+            msg = 'Put your faces in the rectangles, press space to confirm'
             cv2.putText(frame, msg, (20, self.height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65, WHITE, 1, cv2.LINE_AA)
             cv2.imshow('real_view', frame)
             key_pressed = cv2.waitKey(delay) & 0xff
