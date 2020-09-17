@@ -1,6 +1,6 @@
 # Pong_xD
 
-Simple pong game but you control pallets using parts of your body, for instance your head or your friend's hand.
+Simple pong game but you control paddles using parts of your body, for instance your head or your friend's hand.
 
 ## Requirements:
 1. OpenCV
